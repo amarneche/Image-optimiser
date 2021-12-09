@@ -7,24 +7,17 @@ use App\Http\Requests\CompressFilesRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
-
+use Intervention\Image\Facades\Image;
 
 class CompressController extends Controller
 {
     public function compress(CompressFilesRequest $request ){
         // get images from request 
-
-        $optimizerChain = OptimizerChainFactory::create();
         $response =[];
         foreach($request->file('files') as $file ){
-            //upload images to server 
-           $path= $file->store('public');
-           $response['old_path']=$path;
-
-           $output=$optimizerChain->optimize(storage_path($path));
-           $response['output_path']=$output;
-
-
+            
+            $image= Image::make($file)->heighten(600)->save();
+            array_push($response,$image);
         }
         return $response;
         
