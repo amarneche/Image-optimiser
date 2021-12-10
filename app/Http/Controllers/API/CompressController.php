@@ -14,12 +14,19 @@ class CompressController extends Controller
     public function compress(CompressFilesRequest $request ){
         // get images from request 
         $response =[];
+        $quality=$request->quality;
+        $format= $request->format;
+        
         foreach($request->file('files') as $file ){
-            
-            $image= Image::make($file)->heighten(600)->save();
-            array_push($response,$image);
+            $path=$file->store('public');
+
+            $name=$file->getClientOriginalName();
+            $extension=$file->getClientOriginalExtension();
+            $image =Image::make(Storage::path($path))->save(Storage::path($path) ,$quality );
+            return Storage::download($path ,$name);
+           
         }
-        return $response;
+        return response()->json(['hello'=>'World']);
         
 
 

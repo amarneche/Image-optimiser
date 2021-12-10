@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CompressFilesRequest extends FormRequest
 {
@@ -25,6 +26,8 @@ class CompressFilesRequest extends FormRequest
     {
         return [
             'files'=>'',
+            'format'=>[Rule::in(['jpg' ,'png' ,'svg' ,'jpeg'])],
+            'quality'=>['min:0' ,'max:100'],
         ];
     }
 }
