@@ -45,9 +45,10 @@
                                             <input type="radio" class="btn-check" name="format" id="webp"
                                                 autocomplete="off" value="webp">
                                             <label class="btn btn-outline-danger" for="webp">webp</label>
+                                            
                                             <input type="radio" class="btn-check" name="format" id="psd"
                                                 autocomplete="off" value="psd">
-                                            <label class="btn btn-outline-danger" for="webp">PSD</label>
+                                            <label class="btn btn-outline-danger" for="psd">PSD</label>
 
 
                                         </div>
