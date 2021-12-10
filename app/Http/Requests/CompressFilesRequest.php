@@ -26,7 +26,7 @@ class CompressFilesRequest extends FormRequest
     {
         return [
             'files'=>'',
-            'format'=>[Rule::in(['jpg' ,'png' ,'svg' ,'jpeg'])],
+            'format'=>[Rule::in(['jpg' ,'png' ,'gif' ,'jpeg' ,'webp','psd' ,'tif' ,'ico'])],
             'quality'=>['min:0' ,'max:100'],
         ];
     }

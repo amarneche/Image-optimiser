@@ -13,22 +13,35 @@ class CompressController extends Controller
 {
     public function compress(CompressFilesRequest $request ){
         // get images from request 
-        $response =[];
+        $response=[];
         $quality=$request->quality;
         $format= $request->format;
-        
         foreach($request->file('files') as $file ){
-            $path=$file->store('public');
+            $uploadedPath=$file->store('public');
+            $filename=explode('.',$file->getClientOriginalName())[0];
+            $hash=  explode('.',$file->HashName())[0];
+            $originalExtension=$file->getClientOriginalExtension();
+            $compressedFile =Image::make(Storage::path($uploadedPath))->save("storage/{$hash}.{$format}",$quality);
+            $compressedPath="public/{$compressedFile->basename}";
+            Storage::delete($uploadedPath);
 
-            $name=$file->getClientOriginalName();
-            $extension=$file->getClientOriginalExtension();
-            $image =Image::make(Storage::path($path))->save(Storage::path($path) ,$quality );
-            return Storage::download($path ,$name);
-           
+            array_push($response,[
+                'name'=>$filename.".".$format,
+                'path'=>$compressedPath,
+                'oldSize'=>$file->getSize(),
+                'newSize'=>Storage::size($compressedPath),
+                'exension'=>$originalExtension,
+            ]);
         }
-        return response()->json(['hello'=>'World']);
+        return redirect('/')->with('response' , $response);
+       
+    }
+    public function download(Request $request){
+        if($request->path && $request->filename){
+            return Storage::download($request->path,$request->filename) ;
+        }
         
-
-
     }
 }
+
+
