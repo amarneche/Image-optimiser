@@ -13,26 +13,34 @@ class CompressController extends Controller
 {
     public function compress(CompressFilesRequest $request ){
         // get images from request 
-        $response=[];
-        $quality=$request->quality;
-        $format= $request->format;
-        foreach($request->file('files') as $file ){
-            $uploadedPath=$file->store('public');
-            $filename=explode('.',$file->getClientOriginalName())[0];
-            $hash=  explode('.',$file->HashName())[0];
-            $originalExtension=$file->getClientOriginalExtension();
-            $compressedFile =Image::make(Storage::path($uploadedPath))->save("storage/{$hash}.{$format}",$quality);
-            $compressedPath="public/{$compressedFile->basename}";
-            Storage::delete($uploadedPath);
-
-            array_push($response,[
-                'name'=>$filename.".".$format,
-                'path'=>$compressedPath,
-                'oldSize'=>$file->getSize(),
-                'newSize'=>Storage::size($compressedPath),
-                'exension'=>$originalExtension,
-            ]);
+        try{
+            $response=[];
+            $quality=$request->quality;
+            $format= $request->format;
+            foreach($request->file('files') as $file ){
+                $uploadedPath=$file->store('public');
+                $filename=explode('.',$file->getClientOriginalName())[0];
+                $hash=  explode('.',$file->HashName())[0];
+                $originalExtension=$file->getClientOriginalExtension();
+                $compressedFile =Image::make(Storage::path($uploadedPath))->save("storage/{$hash}.{$format}",$quality);
+                $compressedPath="public/{$compressedFile->basename}";
+                Storage::delete($uploadedPath);
+    
+                array_push($response,[
+                    'name'=>$filename.".".$format,
+                    'path'=>$compressedPath,
+                    'oldSize'=>$file->getSize(),
+                    'newSize'=>Storage::size($compressedPath),
+                    'exension'=>$originalExtension,
+                ]);
+            }
+            return response()->json(['response'=>$response]);
         }
+        catch(\exception $e){
+            report($e);
+            return response()->json(['err'=>$e->getMessage()]);
+        }
+
         return redirect('/')->with('response' , $response);
        
     }

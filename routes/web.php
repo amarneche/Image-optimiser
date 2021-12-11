@@ -18,4 +18,4 @@ Route::get('/', function () {
     return view('index');
 });
 Route::post('/api/compress',[CompressController::class ,'compress']);
-Route::post('/',[CompressController::class ,'download'])->name('download');
+Route::post('/api/download',[CompressController::class ,'download'])->name('download');
