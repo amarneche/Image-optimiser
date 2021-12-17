@@ -24,15 +24,17 @@ class CompressController extends Controller
                 $originalExtension=$file->getClientOriginalExtension();
                 $compressedFile =Image::make(Storage::path($uploadedPath))->save("storage/{$hash}.{$format}",$quality);
                 $compressedPath="public/{$compressedFile->basename}";
-                Storage::delete($uploadedPath);
     
                 array_push($response,[
                     'name'=>$filename.".".$format,
+                    'hashName'=>$compressedFile->basename,
                     'path'=>$compressedPath,
                     'oldSize'=>$file->getSize(),
                     'newSize'=>Storage::size($compressedPath),
                     'exension'=>$originalExtension,
                 ]);
+                if($originalExtension != $format)
+                    Storage::delete($uploadedPath);
             }
             return response()->json(['response'=>$response]);
         }
@@ -45,6 +47,7 @@ class CompressController extends Controller
        
     }
     public function download(Request $request){
+
         if($request->path && $request->filename){
             return Storage::download($request->path,$request->filename) ;
         }

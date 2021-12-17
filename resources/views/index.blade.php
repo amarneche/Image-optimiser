@@ -18,7 +18,7 @@
                      <div class="card-header">
                          <div class="card-title text-center p-5">
 
-                             <form action="/api/compress" method="post" enctype="multipart/form-data">
+                             <form  @submit.prevent action="/api/compress" method="post" enctype="multipart/form-data">
                                  @csrf @method('post')
                                  <div class="row mb-2">
                                      <div class="col-sm-6">
@@ -60,7 +60,7 @@
                                          placeholder="" aria-label="" accept="image/*" multiple>
 
                                      <span class="input-group-btn">
-                                         <button class="btn btn-danger " type="submit" aria-label="">Compress</button>
+                                         <button class="btn btn-danger " v-on:click="compress"  aria-label="">Compress</button>
                                      </span>
                                  </div>
 

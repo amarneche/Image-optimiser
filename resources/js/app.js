@@ -46,19 +46,27 @@ const app = new Vue({
             files=e.target.files;
             for (let i=0; i<files.length ; i++){
                 let file= files.item(i);
-                var fd = new FormData;
-                fd.append('files[0]',file);
-                fd.append('format',this.selectedFormat);
-                fd.append('quality',this.compressionRate);
-                this.upload(fd);
-
+                this.selectedFiles.push(file);
             }
         },
+        compress: function(){
+            self=this;
+
+            this.selectedFiles.forEach(function(file){
+                var fd = new FormData;
+                fd.append('files[0]',file);
+                fd.append('format',self.selectedFormat);
+                fd.append('quality',self.compressionRate);
+
+                self.upload(fd);
+                console.log(file);
+            })
+        }
+        ,
         upload :function (data ){
             let self=this;
             axios.post("/api/compress/",data)
             .then(res => {
-                
                 res.data.response.forEach(function(item){
                     self.compressedFiles.push(item);
                 });
@@ -72,17 +80,21 @@ const app = new Vue({
         },
         download :function(index){
             let self=this;
-            axios.post("/api/download",{
-                'path':this.compressedFiles[index].path,
-                'filename':this.compressedFiles[index].name
-            })
-            .then(res => {
-                console.log(res)
-            })
-            .catch(err => {
-                self.error=err;
-                console.error(err); 
-            })
+            axios({
+                method:'GET',
+                url:`storage/${this.compressedFiles[index].hashName}`,
+                responseType:'blob',
+
+           }).then(res=>{
+                var file = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement('a');
+                link.href=file;
+                link.setAttribute('download', self.compressedFiles[index].name );
+                link.click();
+           }).catch(err=>{
+            self.error=err;
+           });
+
         }
     },
     el: '#app',

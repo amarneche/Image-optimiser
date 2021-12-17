@@ -5415,12 +5415,19 @@ var app = new Vue({
 
       for (var i = 0; i < files.length; i++) {
         var file = files.item(i);
+        this.selectedFiles.push(file);
+      }
+    },
+    compress: function compress() {
+      self = this;
+      this.selectedFiles.forEach(function (file) {
         var fd = new FormData();
         fd.append('files[0]', file);
-        fd.append('format', this.selectedFormat);
-        fd.append('quality', this.compressionRate);
-        this.upload(fd);
-      }
+        fd.append('format', self.selectedFormat);
+        fd.append('quality', self.compressionRate);
+        self.upload(fd);
+        console.log(file);
+      });
     },
     upload: function upload(data) {
       var self = this;
@@ -5436,14 +5443,18 @@ var app = new Vue({
     },
     download: function download(index) {
       var self = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/download", {
-        'path': this.compressedFiles[index].path,
-        'filename': this.compressedFiles[index].name
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'GET',
+        url: "storage/".concat(this.compressedFiles[index].hashName),
+        responseType: 'blob'
       }).then(function (res) {
-        console.log(res);
+        var file = window.URL.createObjectURL(new Blob([res.data]));
+        var link = document.createElement('a');
+        link.href = file;
+        link.setAttribute('download', self.compressedFiles[index].name);
+        link.click();
       })["catch"](function (err) {
         self.error = err;
-        console.error(err);
       });
     }
   },
