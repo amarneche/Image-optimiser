@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/api/compress',[CompressController::class ,'compress']);
-Route::post('/api/download',[CompressController::class ,'download'])->name('download');
+Route::post('/api/download',[CompressController::class ,'download']);

@@ -5325,10 +5325,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CompressedFile.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CompressedFile.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5352,9 +5352,304 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.submit();
+    this.oldSize = this.file.size;
+    this.name = this.file.name;
+  },
+  data: function data() {
+    return {
+      isCompressed: false,
+      progress: 0,
+      exension: null,
+      hashName: null,
+      name: null,
+      newSize: null,
+      oldSize: null
+    };
+  },
+  computed: {
+    saving: function saving() {
+      if (this.newSize & this.oldSize) {
+        return Math.floor(this.newSize / this.oldSize * 100) + '%';
+      }
+    },
+    oldSizeFormatted: function oldSizeFormatted() {
+      if (this.oldSize) return this.convertToHumans(this.oldSize);
+    },
+    newSizeFormatted: function newSizeFormatted() {
+      if (this.newSize) return this.convertToHumans(this.newSize);
+    },
+    savingFormatted: function savingFormatted() {
+      if (this.newSize && this.oldSize) {
+        if (this.oldSize > this.newSize) {
+          return this.convertToHumans(this.oldSize - this.newSize);
+        }
+      }
+    }
+  },
+  props: ['file', 'quality', 'format'],
+  methods: {
+    convertToHumans: function convertToHumans(size) {
+      var units = ['B', 'KB', 'MB', 'GB'];
+      var exponent = this.getBaseLog(size, 1024);
+      console.log(exponent);
+      console.log(size);
+      return Math.fround(size / Math.pow(1024, exponent)).toFixed(2) + " " + units[exponent];
+    },
+    getBaseLog: function getBaseLog(x, y) {
+      return Math.floor(Math.log(x) / Math.log(y));
+    },
+    submit: function submit() {
+      var _this = this;
+
+      if (this.format && this.quality) {
+        var fd = new FormData();
+        fd.append("files[0]", this.file);
+        fd.append("format", this.format);
+        fd.append("quality", this.quality);
+        axios.post("/api/compress/", fd, {
+          onUploadProgress: function onUploadProgress(progressEvent) {
+            return _this.progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+          }
+        }).then(function (res) {
+          _this.isCompressed = true;
+          _this.name = res.data.response[0].name;
+          _this.exension = res.data.response[0].exension;
+          _this.hashName = res.data.response[0].hashName;
+          _this.newSize = res.data.response[0].newSize;
+          console.log(res);
+        })["catch"](function (err) {});
+      }
+
+      return false;
+    },
+    download: function download() {
+      var _this2 = this;
+
+      axios.get("/storage/".concat(this.hashName), {
+        responseType: 'blob'
+      }).then(function (res) {
+        console.log(res);
+        var url = window.URL.createObjectURL(new Blob([res.data]));
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute("download", _this2.name);
+        link.click();
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Compressor.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Compressor.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var files = null;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  mounted: function mounted() {
+    console.log("Component mounted.");
+  },
+  data: function data() {
+    return {
+      availableFormat: ["jpg", "jpeg", "png", "webp", "psd", "ico"],
+      compressionRate: 75,
+      selectedFormat: "jpg",
+      selectedFiles: [],
+      error: "",
+      compressedFiles: []
+    };
+  },
+  methods: {
+    changeImages: function changeImages(e) {
+      // for each image call upload the image to send a request !
+      files = e.target.files;
+
+      for (var i = 0; i < files.length; i++) {
+        var file = files.item(i);
+        this.selectedFiles.push(file);
+      }
+    },
+    compress: function compress() {
+      self = this;
+      this.selectedFiles.forEach(function (file) {
+        var fd = new FormData();
+        fd.append("files[0]", file);
+        fd.append("format", self.selectedFormat);
+        fd.append("quality", self.compressionRate);
+        var sizeArr = self.compressedFiles.push({
+          'key': Math.floor(Math.random() * 100),
+          'name': file.name,
+          'progress': 0
+        }); //self.upload(fd ,sizeArr-1 );
+      });
+    },
+    download: function download(index) {
+      var self = this;
+      axios({
+        method: "GET",
+        url: "storage/".concat(this.compressedFiles[index].hashName),
+        responseType: "blob"
+      }).then(function (res) {
+        var file = window.URL.createObjectURL(new Blob([res.data]));
+        var link = document.createElement("a");
+        link.href = file;
+        link.setAttribute("download", self.compressedFiles[index].name);
+        link.click();
+      })["catch"](function (err) {
+        self.error = err;
+      });
+    }
   }
 });
 
@@ -5389,76 +5684,16 @@ window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', (__webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]));
+Vue.component('compressor', (__webpack_require__(/*! ./components/Compressor.vue */ "./resources/js/components/Compressor.vue")["default"]));
+Vue.component('compressed-file', (__webpack_require__(/*! ./components/CompressedFile.vue */ "./resources/js/components/CompressedFile.vue")["default"]));
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var files = null;
 var app = new Vue({
-  data: function data() {
-    return {
-      availableFormat: ['jpg', 'jpeg', 'png', 'webp', 'psd', 'ico'],
-      compressionRate: 75,
-      selectedFormat: 'jpg',
-      selectedFiles: [],
-      error: "",
-      compressedFiles: []
-    };
-  },
-  methods: {
-    changeImages: function changeImages(e) {
-      // for each image call upload the image to send a request ! 
-      files = e.target.files;
-
-      for (var i = 0; i < files.length; i++) {
-        var file = files.item(i);
-        this.selectedFiles.push(file);
-      }
-    },
-    compress: function compress() {
-      self = this;
-      this.selectedFiles.forEach(function (file) {
-        var fd = new FormData();
-        fd.append('files[0]', file);
-        fd.append('format', self.selectedFormat);
-        fd.append('quality', self.compressionRate);
-        self.upload(fd);
-        console.log(file);
-      });
-    },
-    upload: function upload(data) {
-      var self = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/compress/", data).then(function (res) {
-        res.data.response.forEach(function (item) {
-          self.compressedFiles.push(item);
-        });
-        console.log(res);
-      })["catch"](function (err) {
-        self.error = err;
-        console.error(err);
-      });
-    },
-    download: function download(index) {
-      var self = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'GET',
-        url: "storage/".concat(this.compressedFiles[index].hashName),
-        responseType: 'blob'
-      }).then(function (res) {
-        var file = window.URL.createObjectURL(new Blob([res.data]));
-        var link = document.createElement('a');
-        link.href = file;
-        link.setAttribute('download', self.compressedFiles[index].name);
-        link.click();
-      })["catch"](function (err) {
-        self.error = err;
-      });
-    }
-  },
-  el: '#app'
+  el: "#app"
 });
 
 /***/ }),
@@ -27945,10 +28180,10 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ "./resources/js/components/ExampleComponent.vue":
-/*!******************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue ***!
-  \******************************************************/
+/***/ "./resources/js/components/CompressedFile.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/CompressedFile.vue ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -27956,8 +28191,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
-/* harmony import */ var _ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ExampleComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&");
+/* harmony import */ var _CompressedFile_vue_vue_type_template_id_acf98570___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CompressedFile.vue?vue&type=template&id=acf98570& */ "./resources/js/components/CompressedFile.vue?vue&type=template&id=acf98570&");
+/* harmony import */ var _CompressedFile_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CompressedFile.vue?vue&type=script&lang=js& */ "./resources/js/components/CompressedFile.vue?vue&type=script&lang=js&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -27967,9 +28202,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 ;
 var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.render,
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _CompressedFile_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CompressedFile_vue_vue_type_template_id_acf98570___WEBPACK_IMPORTED_MODULE_0__.render,
+  _CompressedFile_vue_vue_type_template_id_acf98570___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
   null,
@@ -27979,15 +28214,15 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/ExampleComponent.vue"
+component.options.__file = "resources/js/components/CompressedFile.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************/
+/***/ "./resources/js/components/Compressor.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/Compressor.vue ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -27995,32 +28230,104 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ExampleComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _Compressor_vue_vue_type_template_id_33086af0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Compressor.vue?vue&type=template&id=33086af0& */ "./resources/js/components/Compressor.vue?vue&type=template&id=33086af0&");
+/* harmony import */ var _Compressor_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Compressor.vue?vue&type=script&lang=js& */ "./resources/js/components/Compressor.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Compressor_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Compressor_vue_vue_type_template_id_33086af0___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Compressor_vue_vue_type_template_id_33086af0___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Compressor.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!*************************************************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \*************************************************************************************/
+/***/ "./resources/js/components/CompressedFile.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/CompressedFile.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CompressedFile_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CompressedFile.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CompressedFile.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CompressedFile_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Compressor.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/Compressor.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Compressor_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Compressor.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Compressor.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Compressor_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CompressedFile.vue?vue&type=template&id=acf98570&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/CompressedFile.vue?vue&type=template&id=acf98570& ***!
+  \***********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CompressedFile_vue_vue_type_template_id_acf98570___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CompressedFile_vue_vue_type_template_id_acf98570___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CompressedFile_vue_vue_type_template_id_acf98570___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CompressedFile.vue?vue&type=template&id=acf98570& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CompressedFile.vue?vue&type=template&id=acf98570&");
 
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \****************************************************************************************************************************************************************************************************************************/
+/***/ "./resources/js/components/Compressor.vue?vue&type=template&id=33086af0&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/Compressor.vue?vue&type=template&id=33086af0& ***!
+  \*******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Compressor_vue_vue_type_template_id_33086af0___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Compressor_vue_vue_type_template_id_33086af0___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Compressor_vue_vue_type_template_id_33086af0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Compressor.vue?vue&type=template&id=33086af0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Compressor.vue?vue&type=template&id=33086af0&");
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CompressedFile.vue?vue&type=template&id=acf98570&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CompressedFile.vue?vue&type=template&id=acf98570& ***!
+  \**************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -28033,28 +28340,301 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("tr", [
+    _c("td", [_vm._v(_vm._s(_vm.name) + " ")]),
+    _vm._v(" "),
+    _c("td", [_vm._v(" " + _vm._s(_vm.oldSizeFormatted))]),
+    _vm._v(" "),
+    _c("td", [_vm._v(_vm._s(_vm.newSizeFormatted))]),
+    _vm._v(" "),
+    _c("td", [_vm._v(_vm._s(_vm.saving))]),
+    _vm._v(" "),
+    _c("td", [
+      _vm.isCompressed
+        ? _c("div", [
+            _c(
+              "button",
+              { staticClass: "btn btn-danger", on: { click: _vm.download } },
+              [_vm._v("\n                Download \n            ")]
+            ),
+          ])
+        : _c("div", [
+            _c("div", { staticClass: "progress" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "progress-bar progress-bar-striped bg-danger ",
+                  style: { width: _vm.progress + "%" },
+                  attrs: {
+                    role: "progressbar",
+                    "aria-valuemin": "0",
+                    "aria-valuemax": "100",
+                  },
+                },
+                [
+                  _vm._v(
+                    "\n                 " +
+                      _vm._s(_vm.progress) +
+                      " % \n            "
+                  ),
+                ]
+              ),
+            ]),
+          ]),
+    ]),
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Compressor.vue?vue&type=template&id=33086af0&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Compressor.vue?vue&type=template&id=33086af0& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "row w-md-50 mx-auto" }, [
+    _c("div", { staticClass: "col sm-12" }, [
+      _c("div", { staticClass: "card rounded border-red shadow" }, [
+        _c("div", { staticClass: "card-header" }, [
+          _c("div", { staticClass: "card-title text-center p-5" }, [
+            _c(
+              "form",
+              {
+                attrs: {
+                  action: "/api/compress",
+                  method: "post",
+                  enctype: "multipart/form-data",
+                },
+                on: {
+                  submit: function ($event) {
+                    $event.preventDefault()
+                  },
+                },
+              },
+              [
+                _c("div", { staticClass: "row mb-2" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-6" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "btn-group",
+                        attrs: { role: "group", "aria-label": "basic" },
+                      },
+                      _vm._l(_vm.availableFormat, function (format) {
+                        return _c("div", { key: format, staticClass: "mx-1" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.selectedFormat,
+                                expression: "selectedFormat",
+                              },
+                            ],
+                            staticClass: "btn-check",
+                            attrs: {
+                              type: "radio",
+                              name: "format",
+                              id: format,
+                              autocomplete: "off",
+                            },
+                            domProps: {
+                              value: format,
+                              checked: _vm._q(_vm.selectedFormat, format),
+                            },
+                            on: {
+                              change: function ($event) {
+                                _vm.selectedFormat = format
+                              },
+                            },
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "label",
+                            {
+                              staticClass: "btn btn-outline-danger",
+                              attrs: { for: format },
+                            },
+                            [
+                              _vm._v(
+                                "\n                                            " +
+                                  _vm._s(format)
+                              ),
+                            ]
+                          ),
+                        ])
+                      }),
+                      0
+                    ),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-12" }),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-sm-12" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-label",
+                        attrs: { for: "customRange3" },
+                      },
+                      [
+                        _vm._v(
+                          "Compression rate :\n                                    " +
+                            _vm._s(_vm.compressionRate) +
+                            "\n                                "
+                        ),
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.compressionRate,
+                          expression: "compressionRate",
+                        },
+                      ],
+                      staticClass: "form-range",
+                      attrs: {
+                        type: "range",
+                        name: "quality",
+                        min: "1",
+                        max: "100",
+                        step: "1",
+                        id: "qualityRange",
+                      },
+                      domProps: { value: _vm.compressionRate },
+                      on: {
+                        __r: function ($event) {
+                          _vm.compressionRate = $event.target.value
+                        },
+                      },
+                    }),
+                  ]),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "input-group mb-3" }, [
+                  _c("input", {
+                    staticClass: "form-control",
+                    attrs: {
+                      type: "file",
+                      name: "files[]",
+                      id: "files[]",
+                      placeholder: "",
+                      "aria-label": "",
+                      accept: "image/*",
+                      multiple: "",
+                    },
+                    on: { change: _vm.changeImages },
+                  }),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "input-group-btn" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { "aria-label": "" },
+                        on: { click: _vm.compress },
+                      },
+                      [
+                        _vm._v(
+                          "\n                                    Compress\n                                "
+                        ),
+                      ]
+                    ),
+                  ]),
+                ]),
+              ]
+            ),
+          ]),
+          _vm._v(" "),
+          _vm.error != ""
+            ? _c("div", { staticClass: "card-title" }, [
+                _c("span", { staticClass: "text-danger" }, [
+                  _vm._v(
+                    "\n                        " +
+                      _vm._s(_vm.error) +
+                      "\n                    "
+                  ),
+                ]),
+              ])
+            : _vm._e(),
+        ]),
+        _vm._v(" "),
+        _vm.compressedFiles.length > 0
+          ? _c("div", { staticClass: "card-body" }, [
+              _c(
+                "table",
+                { staticClass: "table table-striped table-sm-responsive" },
+                [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    _vm._l(_vm.selectedFiles, function (file) {
+                      return _c("compressed-file", {
+                        key: file.name,
+                        attrs: {
+                          file: file,
+                          quality: _vm.compressionRate,
+                          format: _vm.selectedFormat,
+                        },
+                      })
+                    }),
+                    1
+                  ),
+                ]
+              ),
+            ])
+          : _vm._e(),
+      ]),
+    ]),
+  ])
 }
 var staticRenderFns = [
   function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component"),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              ),
-            ]),
-          ]),
-        ]),
+    return _c("div", { staticClass: "col-sm-6" }, [
+      _c("strong", [_vm._v(" Convert images to : ")]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-default" }, [
+      _c("tr", [
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("original Size")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("New Size")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Saving %")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Action")]),
       ]),
     ])
   },

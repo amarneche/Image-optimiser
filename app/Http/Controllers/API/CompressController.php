@@ -46,6 +46,9 @@ class CompressController extends Controller
         return redirect('/')->with('response' , $response);
        
     }
+
+
+    
     public function download(Request $request){
 
         if($request->path && $request->filename){
