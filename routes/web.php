@@ -19,3 +19,7 @@ Route::get('/', function () {
 });
 Route::post('/api/compress',[CompressController::class ,'compress']);
 Route::post('/api/download',[CompressController::class ,'download'])->name('download');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
