@@ -29,5 +29,17 @@ Vue.component('compressed-file', require('./components/CompressedFile.vue').defa
  */
 
 const app = new Vue({
-    el:"#app"
+    el:"#app",
+    data:()=>{
+        return{
+            selectedFiles: [],
+            selectedQuality:75,
+            selectedFormat:'jpg'
+        }
+    },
+    methods:{
+        addFile(file){
+            this.selectedFiles.push(file);
+        }
+    }
 });

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CompressController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,8 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 });
-Route::post('/api/compress',[CompressController::class ,'compress']);
-Route::post('/api/download',[CompressController::class ,'download'])->name('download');
+
 
 Auth::routes();
 

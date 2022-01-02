@@ -5366,6 +5366,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     this.submit();
@@ -5512,89 +5518,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 var files = null;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
@@ -5603,53 +5526,26 @@ var files = null;
   data: function data() {
     return {
       availableFormat: ["jpg", "jpeg", "png", "webp", "psd", "ico"],
-      compressionRate: 75,
-      selectedFormat: "jpg",
-      selectedFiles: [],
       error: "",
       compressedFiles: []
     };
   },
+  props: ['selectedFiles', 'selectedQuality', 'selectedFormat'],
   methods: {
+    openFileExplorer: function openFileExplorer(e) {
+      var fileInput = document.getElementById('fileInput');
+      fileInput.click();
+    },
     changeImages: function changeImages(e) {
       // for each image call upload the image to send a request !
       files = e.target.files;
 
       for (var i = 0; i < files.length; i++) {
         var file = files.item(i);
-        this.selectedFiles.push(file);
+        this.$emit('file-selected', file);
       }
     },
-    compress: function compress() {
-      self = this;
-      this.selectedFiles.forEach(function (file) {
-        var fd = new FormData();
-        fd.append("files[0]", file);
-        fd.append("format", self.selectedFormat);
-        fd.append("quality", self.compressionRate);
-        var sizeArr = self.compressedFiles.push({
-          'key': Math.floor(Math.random() * 100),
-          'name': file.name,
-          'progress': 0
-        }); //self.upload(fd ,sizeArr-1 );
-      });
-    },
-    download: function download(index) {
-      var self = this;
-      axios({
-        method: "GET",
-        url: "storage/".concat(this.compressedFiles[index].hashName),
-        responseType: "blob"
-      }).then(function (res) {
-        var file = window.URL.createObjectURL(new Blob([res.data]));
-        var link = document.createElement("a");
-        link.href = file;
-        link.setAttribute("download", self.compressedFiles[index].name);
-        link.click();
-      })["catch"](function (err) {
-        self.error = err;
-      });
-    }
+    compress: function compress() {}
   }
 });
 
@@ -5693,7 +5589,19 @@ Vue.component('compressed-file', (__webpack_require__(/*! ./components/Compresse
  */
 
 var app = new Vue({
-  el: "#app"
+  el: "#app",
+  data: function data() {
+    return {
+      selectedFiles: [],
+      selectedQuality: 75,
+      selectedFormat: 'jpg'
+    };
+  },
+  methods: {
+    addFile: function addFile(file) {
+      this.selectedFiles.push(file);
+    }
+  }
 });
 
 /***/ }),
@@ -28354,8 +28262,36 @@ var render = function () {
         ? _c("div", [
             _c(
               "button",
-              { staticClass: "btn btn-danger", on: { click: _vm.download } },
-              [_vm._v("\n                Download \n            ")]
+              {
+                staticClass: "btn  btn-sm btn-danger",
+                on: { click: _vm.download },
+              },
+              [
+                _c(
+                  "svg",
+                  {
+                    attrs: {
+                      width: "20",
+                      height: "20",
+                      viewBox: "0 0 20 20",
+                      fill: "none",
+                      xmlns: "http://www.w3.org/2000/svg",
+                    },
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d: "M19 13V17C19 17.5304 18.7893 18.0391 18.4142 18.4142C18.0391 18.7893 17.5304 19 17 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V13M5 8L10 13M10 13L15 8M10 13V1",
+                        stroke: "white",
+                        "stroke-width": "2",
+                        "stroke-linecap": "round",
+                        "stroke-linejoin": "round",
+                      },
+                    }),
+                  ]
+                ),
+                _vm._v(" \n                    Download \n                "),
+              ]
             ),
           ])
         : _c("div", [
@@ -28373,9 +28309,9 @@ var render = function () {
                 },
                 [
                   _vm._v(
-                    "\n                 " +
+                    "\n                     " +
                       _vm._s(_vm.progress) +
-                      " % \n            "
+                      " % \n                "
                   ),
                 ]
               ),
@@ -28407,238 +28343,174 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row w-md-50 mx-auto" }, [
-    _c("div", { staticClass: "col sm-12" }, [
-      _c("div", { staticClass: "card rounded border-red shadow" }, [
-        _c("div", { staticClass: "card-header" }, [
-          _c("div", { staticClass: "card-title text-center p-5" }, [
-            _c(
-              "form",
-              {
-                attrs: {
-                  action: "/api/compress",
-                  method: "post",
-                  enctype: "multipart/form-data",
+  return _c(
+    "div",
+    { staticClass: "card px-2 py-1", staticStyle: { "border-radius": "30px" } },
+    [
+      _c("div", { staticClass: "card-body text-nowrap text-truncate" }, [
+        _c(
+          "h6",
+          {
+            staticClass: "card-title fw-bold",
+            staticStyle: { "margin-top": "20px", "margin-bottom": "10px" },
+          },
+          [
+            _vm._v(
+              "Convert them into :" +
+                _vm._s(_vm.selectedFormat) +
+                "\n                    "
+            ),
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "btn-group format-container",
+            staticStyle: { "margin-bottom": "25px" },
+            attrs: { role: "group" },
+          },
+          _vm._l(_vm.availableFormat, function (format) {
+            return _c("div", { key: format, staticClass: "format-selector" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.selectedFormat,
+                    expression: "selectedFormat",
+                  },
+                ],
+                attrs: { type: "radio", name: "format", id: format },
+                domProps: {
+                  value: format,
+                  checked: _vm._q(_vm.selectedFormat, format),
                 },
                 on: {
-                  submit: function ($event) {
-                    $event.preventDefault()
+                  change: function ($event) {
+                    _vm.selectedFormat = format
                   },
                 },
+              }),
+              _vm._v(" "),
+              _c("label", { attrs: { for: format } }, [_vm._v(_vm._s(format))]),
+            ])
+          }),
+          0
+        ),
+        _vm._v(" "),
+        _c(
+          "h6",
+          { staticClass: "card-title", staticStyle: { "font-weight": "bold" } },
+          [_vm._v("Conversion quality : " + _vm._s(_vm.selectedQuality) + " %")]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "row",
+            staticStyle: { "margin-left": "0px", "margin-bottom": "15px" },
+          },
+          [
+            _c("div", { staticClass: "col" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.selectedQuality,
+                    expression: "selectedQuality",
+                  },
+                ],
+                staticClass: "form-range",
+                attrs: { type: "range", id: "qualityRange", name: "quality" },
+                domProps: { value: _vm.selectedQuality },
+                on: {
+                  __r: function ($event) {
+                    _vm.selectedQuality = $event.target.value
+                  },
+                },
+              }),
+            ]),
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "row mx-1" }, [
+          _c("div", { staticClass: "col-sm-12 col-md-8 p-0 w-100" }, [
+            _c(
+              "div",
+              {
+                staticClass: "d-flex justify-content-center align-items-center",
+                attrs: { id: "chooseFile" },
+                on: { click: _vm.openFileExplorer },
               },
               [
-                _c("div", { staticClass: "row mb-2" }, [
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-sm-6" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass: "btn-group",
-                        attrs: { role: "group", "aria-label": "basic" },
-                      },
-                      _vm._l(_vm.availableFormat, function (format) {
-                        return _c("div", { key: format, staticClass: "mx-1" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.selectedFormat,
-                                expression: "selectedFormat",
-                              },
-                            ],
-                            staticClass: "btn-check",
-                            attrs: {
-                              type: "radio",
-                              name: "format",
-                              id: format,
-                              autocomplete: "off",
-                            },
-                            domProps: {
-                              value: format,
-                              checked: _vm._q(_vm.selectedFormat, format),
-                            },
-                            on: {
-                              change: function ($event) {
-                                _vm.selectedFormat = format
-                              },
-                            },
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "label",
-                            {
-                              staticClass: "btn btn-outline-danger",
-                              attrs: { for: format },
-                            },
-                            [
-                              _vm._v(
-                                "\n                                            " +
-                                  _vm._s(format)
-                              ),
-                            ]
-                          ),
-                        ])
-                      }),
-                      0
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-sm-12" }),
-                ]),
+                _c("input", {
+                  attrs: {
+                    type: "file",
+                    name: "",
+                    id: "fileInput",
+                    hidden: "",
+                    accept: "image/*",
+                    multiple: "",
+                  },
+                  on: { change: _vm.changeImages },
+                }),
                 _vm._v(" "),
-                _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col-sm-12" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "form-label",
-                        attrs: { for: "customRange3" },
-                      },
-                      [
-                        _vm._v(
-                          "Compression rate :\n                                    " +
-                            _vm._s(_vm.compressionRate) +
-                            "\n                                "
-                        ),
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.compressionRate,
-                          expression: "compressionRate",
-                        },
-                      ],
-                      staticClass: "form-range",
+                _c(
+                  "svg",
+                  {
+                    attrs: {
+                      width: "28",
+                      height: "28",
+                      viewBox: "0 0 28 28",
+                      fill: "none",
+                      xmlns: "http://www.w3.org/2000/svg",
+                    },
+                  },
+                  [
+                    _c("path", {
                       attrs: {
-                        type: "range",
-                        name: "quality",
-                        min: "1",
-                        max: "100",
-                        step: "1",
-                        id: "qualityRange",
-                      },
-                      domProps: { value: _vm.compressionRate },
-                      on: {
-                        __r: function ($event) {
-                          _vm.compressionRate = $event.target.value
-                        },
+                        d: "M24.1111 1H3.88889C2.2934 1 1 2.2934 1 3.88889V24.1111C1 25.7066 2.2934 27 3.88889 27H24.1111C25.7066 27 27 25.7066 27 24.1111V3.88889C27 2.2934 25.7066 1 24.1111 1Z",
+                        stroke: "black",
+                        "stroke-width": "2",
+                        "stroke-linecap": "round",
+                        "stroke-linejoin": "round",
                       },
                     }),
-                  ]),
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "input-group mb-3" }, [
-                  _c("input", {
-                    staticClass: "form-control",
-                    attrs: {
-                      type: "file",
-                      name: "files[]",
-                      id: "files[]",
-                      placeholder: "",
-                      "aria-label": "",
-                      accept: "image/*",
-                      multiple: "",
-                    },
-                    on: { change: _vm.changeImages },
-                  }),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "input-group-btn" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-danger",
-                        attrs: { "aria-label": "" },
-                        on: { click: _vm.compress },
+                    _vm._v(" "),
+                    _c("path", {
+                      attrs: {
+                        d: "M8.94444 11.1111C10.1411 11.1111 11.1111 10.1411 11.1111 8.94445C11.1111 7.74783 10.1411 6.77778 8.94444 6.77778C7.74782 6.77778 6.77777 7.74783 6.77777 8.94445C6.77777 10.1411 7.74782 11.1111 8.94444 11.1111Z",
+                        stroke: "black",
+                        "stroke-width": "2",
+                        "stroke-linecap": "round",
+                        "stroke-linejoin": "round",
                       },
-                      [
-                        _vm._v(
-                          "\n                                    Compress\n                                "
-                        ),
-                      ]
-                    ),
-                  ]),
-                ]),
+                    }),
+                    _vm._v(" "),
+                    _c("path", {
+                      attrs: {
+                        d: "M27 18.3333L19.7778 11.1111L3.88892 27",
+                        stroke: "black",
+                        "stroke-width": "2",
+                        "stroke-linecap": "round",
+                        "stroke-linejoin": "round",
+                      },
+                    }),
+                  ]
+                ),
+                _vm._v(" "),
+                _c("h6", { staticClass: "mx-2" }, [_vm._v(" Choose files ")]),
               ]
             ),
           ]),
-          _vm._v(" "),
-          _vm.error != ""
-            ? _c("div", { staticClass: "card-title" }, [
-                _c("span", { staticClass: "text-danger" }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(_vm.error) +
-                      "\n                    "
-                  ),
-                ]),
-              ])
-            : _vm._e(),
         ]),
-        _vm._v(" "),
-        _vm.compressedFiles.length > 0
-          ? _c("div", { staticClass: "card-body" }, [
-              _c(
-                "table",
-                { staticClass: "table table-striped table-sm-responsive" },
-                [
-                  _vm._m(1),
-                  _vm._v(" "),
-                  _c(
-                    "tbody",
-                    _vm._l(_vm.selectedFiles, function (file) {
-                      return _c("compressed-file", {
-                        key: file.name,
-                        attrs: {
-                          file: file,
-                          quality: _vm.compressionRate,
-                          format: _vm.selectedFormat,
-                        },
-                      })
-                    }),
-                    1
-                  ),
-                ]
-              ),
-            ])
-          : _vm._e(),
       ]),
-    ]),
-  ])
+    ]
+  )
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-sm-6" }, [
-      _c("strong", [_vm._v(" Convert images to : ")]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", { staticClass: "thead-default" }, [
-      _c("tr", [
-        _c("th", [_vm._v("Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("original Size")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("New Size")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Saving %")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Action")]),
-      ]),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

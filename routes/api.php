@@ -18,5 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/api/compress',[CompressController::class ,'compress']);
-Route::post('/api/download',[CompressController::class ,'download']);
+Route::post('/compress',[CompressController::class ,'compress']);
+Route::post('/download',[CompressController::class ,'download']);

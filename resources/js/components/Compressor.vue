@@ -1,125 +1,42 @@
 <template>
-    <div class="row w-md-50 mx-auto">
-        <div class="col sm-12">
-            <div class="card rounded border-red shadow">
-                <div class="card-header">
-                    <div class="card-title text-center p-5">
-                        <form
-                            @submit.prevent
-                            action="/api/compress"
-                            method="post"
-                            enctype="multipart/form-data"
-                        >
-                            <div class="row mb-2">
-                                <div class="col-sm-6">
-                                    <strong> Convert images to : </strong>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div
-                                        class="btn-group"
-                                        role="group"
-                                        aria-label="basic"
-                                    >
-                                        <div
-                                            v-for="format in availableFormat"
-                                            :key="format"
-                                            class="mx-1"
-                                        >
-                                            <input
-                                                type="radio"
-                                                class="btn-check"
-                                                name="format"
-                                                :id="format"
-                                                autocomplete="off"
-                                                :value="format"
-                                                v-model="selectedFormat"
-                                            />
-                                            <label
-                                                class="btn btn-outline-danger"
-                                                :for="format"
-                                            >
-                                                {{ format }}</label
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12"></div>
+    <div class="card px-2 py-1" style="border-radius: 30px;">
+                    <div class="card-body text-nowrap text-truncate">
+                        <h6 class="card-title fw-bold" style="margin-top: 20px;margin-bottom: 10px;">Convert them into :{{selectedFormat}}
+                        </h6>
+                        <div class="btn-group format-container" role="group" style="margin-bottom: 25px;">
+                            <div class="format-selector" v-for="format in availableFormat" :key="format" >
+                                <input type="radio" name="format" :id="format" :value="format" v-model="selectedFormat"  >
+                                <label :for="format">{{ format}}</label>
+
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label for="customRange3" class="form-label"
-                                        >Compression rate :
-                                        {{ compressionRate }}
-                                    </label>
-                                    <input
-                                        type="range"
-                                        v-model="compressionRate"
-                                        name="quality"
-                                        class="form-range"
-                                        min="1"
-                                        max="100"
-                                        step="1"
-                                        id="qualityRange"
-                                    />
+                            </div>
+                        <h6 class="card-title" style="font-weight: bold;">Conversion quality : {{selectedQuality}} %</h6>
+                        <div class="row" style="margin-left: 0px;margin-bottom: 15px;">
+                            <div class="col">
+                                <input class="form-range" type="range" id="qualityRange"  
+                                        v-model="selectedQuality"
+                                        name="quality">
+                            </div>
+                        </div>
+                        <div class="row mx-1">
+                            <div class="col-sm-12 col-md-8 p-0 w-100">
+                                <div class="d-flex justify-content-center align-items-center" id="chooseFile" @click="openFileExplorer">
+                                    <input type="file" name="" id="fileInput" hidden  @change="changeImages" accept="image/*" multiple>
+                                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M24.1111 1H3.88889C2.2934 1 1 2.2934 1 3.88889V24.1111C1 25.7066 2.2934 27 3.88889 27H24.1111C25.7066 27 27 25.7066 27 24.1111V3.88889C27 2.2934 25.7066 1 24.1111 1Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M8.94444 11.1111C10.1411 11.1111 11.1111 10.1411 11.1111 8.94445C11.1111 7.74783 10.1411 6.77778 8.94444 6.77778C7.74782 6.77778 6.77777 7.74783 6.77777 8.94445C6.77777 10.1411 7.74782 11.1111 8.94444 11.1111Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M27 18.3333L19.7778 11.1111L3.88892 27" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                        
+                                    <h6 class="mx-2"> Choose files </h6>
                                 </div>
                             </div>
 
-                            <div class="input-group mb-3">
-                                <input
-                                    v-on:change="changeImages"
-                                    type="file"
-                                    class="form-control"
-                                    name="files[]"
-                                    id="files[]"
-                                    placeholder=""
-                                    aria-label=""
-                                    accept="image/*"
-                                    multiple
-                                />
-
-                                <span class="input-group-btn">
-                                    <button
-                                        class="btn btn-danger"
-                                        v-on:click="compress"
-                                        aria-label=""
-                                    >
-                                        Compress
-                                    </button>
-                                </span>
-                            </div>
-                        </form>
+                        </div>
                     </div>
-                    <div class="card-title" v-if="error != ''">
-                        <span class="text-danger">
-                            {{ error }}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="card-body" v-if="compressedFiles.length > 0">
-                    <table class="table table-striped table-sm-responsive">
-                        <thead class="thead-default">
-                            <tr>
-                                <th>Name</th>
-                                <th>original Size</th>
-                                <th>New Size</th>
-                                <th>Saving %</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                <compressed-file  v-for="  file in selectedFiles"  
-                                    :key="file.name" 
-                                    :file="file" 
-                                    :quality="compressionRate" 
-                                    :format="selectedFormat" >
-                                </compressed-file>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
-    </div>
+
+
 </template>
 
 <script>
@@ -131,61 +48,30 @@ export default {
     data() {
         return {
             availableFormat: ["jpg", "jpeg", "png", "webp", "psd", "ico"],
-            compressionRate: 75,
-            selectedFormat: "jpg",
-            selectedFiles: [],
             error: "",
             compressedFiles: [],
         };
     },
+    props:['selectedFiles','selectedQuality','selectedFormat'],
     methods: {
+        openFileExplorer: function(e){
+            let fileInput= document.getElementById('fileInput');
+            fileInput.click();
+        },
         changeImages: function (e) {
             // for each image call upload the image to send a request !
             files = e.target.files;
             for (let i = 0; i < files.length; i++) {
                 let file = files.item(i);
-                this.selectedFiles.push(file);
+                this.$emit('file-selected',file);
+                
             }
         },
         compress: function () {
-            self = this;
-
-            this.selectedFiles.forEach(function (file) {
-                var fd = new FormData();
-                fd.append("files[0]", file);
-                fd.append("format", self.selectedFormat);
-                fd.append("quality", self.compressionRate);
-
-               var sizeArr = self.compressedFiles.push({
-                    'key':Math.floor(Math.random()*100),
-                    'name':file.name,
-                    'progress':0,
-                });
-                //self.upload(fd ,sizeArr-1 );
-            });
+           
         },
 
-        download: function (index) {
-            let self = this;
-            axios({
-                method: "GET",
-                url: `storage/${this.compressedFiles[index].hashName}`,
-                responseType: "blob",
-            })
-                .then((res) => {
-                    var file = window.URL.createObjectURL(new Blob([res.data]));
-                    const link = document.createElement("a");
-                    link.href = file;
-                    link.setAttribute(
-                        "download",
-                        self.compressedFiles[index].name
-                    );
-                    link.click();
-                })
-                .catch((err) => {
-                    self.error = err;
-                });
-        },
+
     },
 };
 </script>

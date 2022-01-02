@@ -27,6 +27,7 @@
     },
     "homepage": "https://github.com/amarneche/Image-optimiser#readme",
     "devDependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.4",
         "@popperjs/core": "^2.10.2",
         "bootstrap": "^5.1.3",
         "cross-env": "^7.0.3",
