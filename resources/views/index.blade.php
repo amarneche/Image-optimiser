@@ -16,6 +16,8 @@
                        :selected-quality="selectedQuality"
                        :selected-files="selectedFiles"
                        @file-selected="addFile"
+                       @format-selected="changeFormat"
+                       @quality-selected="changeQuality"
                        
                     ></compressor>
                 </div>

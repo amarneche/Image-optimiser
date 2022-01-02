@@ -40,6 +40,13 @@ const app = new Vue({
     methods:{
         addFile(file){
             this.selectedFiles.push(file);
+        },
+        changeFormat(format){
+            this.selectedFormat=format;
+        },
+        changeQuality(quality){
+            this.selectedQuality=quality;
         }
+
     }
 });

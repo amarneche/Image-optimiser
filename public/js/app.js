@@ -5522,13 +5522,25 @@ var files = null;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     console.log("Component mounted.");
+    this.customSelected = this.selectedFormat;
+    this.customQuality = this.selectedQuality;
   },
   data: function data() {
     return {
       availableFormat: ["jpg", "jpeg", "png", "webp", "psd", "ico"],
       error: "",
-      compressedFiles: []
+      compressedFiles: [],
+      customSelected: null,
+      customQuality: 75
     };
+  },
+  watch: {
+    customSelected: function customSelected(format) {
+      this.$emit('format-selected', format);
+    },
+    customQuality: function customQuality(quality) {
+      this.$emit('quality-selected', quality);
+    }
   },
   props: ['selectedFiles', 'selectedQuality', 'selectedFormat'],
   methods: {
@@ -5544,6 +5556,9 @@ var files = null;
         var file = files.item(i);
         this.$emit('file-selected', file);
       }
+    },
+    updateFormat: function updateFormat(format) {
+      this.$emit('format-selected', 'jpg');
     },
     compress: function compress() {}
   }
@@ -5600,6 +5615,12 @@ var app = new Vue({
   methods: {
     addFile: function addFile(file) {
       this.selectedFiles.push(file);
+    },
+    changeFormat: function changeFormat(format) {
+      this.selectedFormat = format;
+    },
+    changeQuality: function changeQuality(quality) {
+      this.selectedQuality = quality;
     }
   }
 });
@@ -28377,18 +28398,18 @@ var render = function () {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.selectedFormat,
-                    expression: "selectedFormat",
+                    value: _vm.customSelected,
+                    expression: "customSelected",
                   },
                 ],
                 attrs: { type: "radio", name: "format", id: format },
                 domProps: {
                   value: format,
-                  checked: _vm._q(_vm.selectedFormat, format),
+                  checked: _vm._q(_vm.customSelected, format),
                 },
                 on: {
                   change: function ($event) {
-                    _vm.selectedFormat = format
+                    _vm.customSelected = format
                   },
                 },
               }),
@@ -28402,7 +28423,7 @@ var render = function () {
         _c(
           "h6",
           { staticClass: "card-title", staticStyle: { "font-weight": "bold" } },
-          [_vm._v("Conversion quality : " + _vm._s(_vm.selectedQuality) + " %")]
+          [_vm._v("Conversion quality : " + _vm._s(_vm.customQuality) + " %")]
         ),
         _vm._v(" "),
         _c(
@@ -28418,16 +28439,16 @@ var render = function () {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.selectedQuality,
-                    expression: "selectedQuality",
+                    value: _vm.customQuality,
+                    expression: "customQuality",
                   },
                 ],
                 staticClass: "form-range",
                 attrs: { type: "range", id: "qualityRange", name: "quality" },
-                domProps: { value: _vm.selectedQuality },
+                domProps: { value: _vm.customQuality },
                 on: {
                   __r: function ($event) {
-                    _vm.selectedQuality = $event.target.value
+                    _vm.customQuality = $event.target.value
                   },
                 },
               }),

@@ -5,16 +5,16 @@
                         </h6>
                         <div class="btn-group format-container" role="group" style="margin-bottom: 25px;">
                             <div class="format-selector" v-for="format in availableFormat" :key="format" >
-                                <input type="radio" name="format" :id="format" :value="format" v-model="selectedFormat"  >
+                                <input type="radio" name="format" :id="format" :value="format" v-model="customSelected" >
                                 <label :for="format">{{ format}}</label>
 
                             </div>
                             </div>
-                        <h6 class="card-title" style="font-weight: bold;">Conversion quality : {{selectedQuality}} %</h6>
+                        <h6 class="card-title" style="font-weight: bold;">Conversion quality : {{customQuality}} %</h6>
                         <div class="row" style="margin-left: 0px;margin-bottom: 15px;">
                             <div class="col">
                                 <input class="form-range" type="range" id="qualityRange"  
-                                        v-model="selectedQuality"
+                                        v-model="customQuality"
                                         name="quality">
                             </div>
                         </div>
@@ -44,13 +44,26 @@ let files = null;
 export default {
     mounted() {
         console.log("Component mounted.");
+        this.customSelected=this.selectedFormat;
+        this.customQuality=this.selectedQuality;
     },
     data() {
         return {
             availableFormat: ["jpg", "jpeg", "png", "webp", "psd", "ico"],
             error: "",
             compressedFiles: [],
+            customSelected:null,
+            customQuality:75
         };
+    },
+
+    watch:{
+        customSelected:function(format){
+           this.$emit('format-selected',format)
+        },
+        customQuality:function(quality){
+            this.$emit('quality-selected',quality);
+        }
     },
     props:['selectedFiles','selectedQuality','selectedFormat'],
     methods: {
@@ -66,6 +79,9 @@ export default {
                 this.$emit('file-selected',file);
                 
             }
+        },
+        updateFormat: function(format){
+            this.$emit('format-selected' ,'jpg' );
         },
         compress: function () {
            
