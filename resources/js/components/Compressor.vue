@@ -41,6 +41,7 @@
 
 <script>
 let files = null;
+import { v4 as uuidv4 } from 'uuid';
 export default {
     mounted() {
         console.log("Component mounted.");
@@ -76,9 +77,12 @@ export default {
             files = e.target.files;
             for (let i = 0; i < files.length; i++) {
                 let file = files.item(i);
+                file['id']= uuidv4();
+                console.log("UUID : "+ uuidv4() );
                 this.$emit('file-selected',file);
                 
             }
+            document.getElementById('fileInput').value="";
         },
         updateFormat: function(format){
             this.$emit('format-selected' ,'jpg' );

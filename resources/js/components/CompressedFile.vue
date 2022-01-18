@@ -10,6 +10,7 @@
 
         <td>
             <div v-if="isCompressed" > 
+                <a target="__blank" :href="viewUrl" class="btn btn-outlined-secondary">View </a>
                 <button class="btn  btn-sm btn-danger" @click="download" >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M19 13V17C19 17.5304 18.7893 18.0391 18.4142 18.4142C18.0391 18.7893 17.5304 19 17 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V13M5 8L10 13M10 13L15 8M10 13V1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -52,6 +53,7 @@ export default {
             name: null,
             newSize: null,
             oldSize: null,
+           
         }
     },
     computed :{
@@ -74,6 +76,9 @@ export default {
                     return this.convertToHumans( this.oldSize-this.newSize );
                 }
             }
+        },
+        viewUrl(){
+            return "storage/"+this.hashName;
         }
 
 

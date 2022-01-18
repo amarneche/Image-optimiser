@@ -27,8 +27,13 @@
             <div class="row">
                 <div class="col">
                     <div class="card shadow">
-                        <div class="card-header text-center">
-                            <h6>Compressed images :</h6>
+                        <div class="card-header text-center d-flex  justify-content-between">
+                            <div class="card-title">
+                                <h6>Compressed images :</h6>
+                            </div>
+                            <div class="card-toolbar" v-if="selectedFiles.length>0">
+                                <button class="btn btn-danger" v-on:click="reset" >   Reset </button>
+                            </div>
                         </div>
                         <div class="card-body p-0" >
                             <div class="table-responsive-sm text-start m-0" style="font-size: 12px;">
@@ -43,7 +48,7 @@
                                         </tr>
                                     </thead>
                                     <tbody >
-                                        <tr is="compressed-file" v-for="file in selectedFiles" :key="file.name" 
+                                        <tr is="compressed-file" v-for="file in selectedFiles" :key="file.id" 
                                             :file="file" 
                                             :quality="selectedQuality"
                                             :format="selectedFormat"

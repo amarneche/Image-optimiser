@@ -8,7 +8,7 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 import axios from 'axios';
-
+import { v4 as uuidv4 } from 'uuid';
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -46,6 +46,11 @@ const app = new Vue({
         },
         changeQuality(quality){
             this.selectedQuality=quality;
+        },
+        reset(){
+            this.selectedFiles=[];
+            this.selectedQuality=75;
+            this.selectedFormat='jpg';
         }
 
     }
