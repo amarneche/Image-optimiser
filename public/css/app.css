@@ -307,6 +307,12 @@ div {
   --font-family-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
 }
 
+body{
+  color: rgb(33, 37, 41);
+  font-weight: normal;
+  font-style: normal;
+  font-family: Poppins, sans-serif;
+}
 .format-container {
   display: flex;
   flex-wrap: wrap;
